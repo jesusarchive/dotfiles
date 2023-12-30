@@ -1,0 +1,10 @@
+syntax on
+set expandtab
+set ai
+set number
+set relativenumber
+set hlsearch
+set ignorecase
+set smartcase
+set incsearch
+set ruler
