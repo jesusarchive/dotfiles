@@ -101,7 +101,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 ## Custom config
- 
+
 # nvm
 source /usr/share/nvm/init-nvm.sh
 
