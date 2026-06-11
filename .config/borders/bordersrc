@@ -1,0 +1,9 @@
+#!/bin/bash
+# i3 default client colors: focused child_border #285577, unfocused #222222
+
+borders \
+  style=round \
+  width=2.0 \
+  order=above \
+  active_color=0xff285577 \
+  inactive_color=0xff222222
