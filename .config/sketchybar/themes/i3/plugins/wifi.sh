@@ -1,7 +1,7 @@
 #!/bin/bash
 # i3status wireless _first_: "W: (%quality at %essid) %ip" / "W: down"
 
-source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/themes/i3/colors.sh"
 
 IF=$(networksetup -listallhardwareports 2>/dev/null | awk '/Wi-Fi/{getline; print $2; exit}')
 IF="${IF:-en1}"

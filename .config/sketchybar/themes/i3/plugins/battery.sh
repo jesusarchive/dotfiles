@@ -1,7 +1,7 @@
 #!/bin/bash
 # i3status battery all: "%status %percentage %remaining"; hidden when no battery.
 
-source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/themes/i3/colors.sh"
 
 BATT=$(pmset -g batt)
 PCT=$(echo "$BATT" | grep -Eo '[0-9]+%' | head -1 | tr -d '%')

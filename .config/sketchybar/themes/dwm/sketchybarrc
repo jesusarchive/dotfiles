@@ -1,0 +1,102 @@
+#!/bin/bash
+# SketchyBar config replicating the default dwm bar + slstatus.
+# Layout: tags | []= | window title ........ status text
+
+CONFIG_DIR="$HOME/.config/sketchybar"
+PLUGIN_DIR="$CONFIG_DIR/themes/dwm/plugins"
+source "$CONFIG_DIR/themes/dwm/colors.sh"
+
+# --- bar: dwm defaults (top, gray1, square, flush) -----------------------
+# dwm: bh = font height + 2
+sketchybar --bar position=top \
+                 height=19 \
+                 color=$BAR_BG \
+                 border_width=0 \
+                 corner_radius=0 \
+                 blur_radius=0 \
+                 margin=0 \
+                 y_offset=0 \
+                 padding_left=0 \
+                 padding_right=0 \
+                 shadow=off \
+                 sticky=on \
+                 topmost=window
+
+sketchybar --default updates=on \
+                     icon.drawing=off \
+                     label.font="$FONT:Book:13.0" \
+                     label.color=$NORM_FG \
+                     label.padding_left=0 \
+                     label.padding_right=0 \
+                     padding_left=0 \
+                     padding_right=0 \
+                     background.drawing=off
+
+# --- tags (left), the 9 dwm tags, all always visible ----------------------
+# Occupied tags get the tiny top-left square: filled on the focused tag,
+# outline elsewhere, like dwm. Selected tag is cyan.
+sketchybar --add event aerospace_workspace_change
+sketchybar --add event title_resize
+
+for sid in $(aerospace list-workspaces --all | grep -E '^[1-9]$'); do
+  sketchybar --add item tag."$sid" left \
+             --set tag."$sid" \
+                   label="$sid" \
+                   label.padding_left=2 \
+                   label.padding_right=8 \
+                   icon="■" \
+                   icon.drawing=on \
+                   icon.font="$FONT:Book:7.0" \
+                   icon.color=0x00000000 \
+                   icon.y_offset=4 \
+                   icon.padding_left=2 \
+                   icon.padding_right=0 \
+                   background.drawing=on \
+                   background.height=19 \
+                   background.corner_radius=0 \
+                   background.color=$BAR_BG \
+                   click_script="aerospace workspace $sid" \
+                   script="$PLUGIN_DIR/tags.sh $sid" \
+             --subscribe tag."$sid" aerospace_workspace_change front_app_switched
+done
+
+# --- layout symbol: []= tiles, [M] accordion, <>< floating ---------------
+# No aerospace event fires on layout toggle, so poll as fallback.
+sketchybar --add item layout left \
+           --set layout label="[]=" \
+                 label.padding_left=6 \
+                 label.padding_right=6 \
+                 update_freq=2 \
+                 script="$PLUGIN_DIR/layout.sh" \
+           --subscribe layout front_app_switched aerospace_workspace_change
+
+# --- focused window title, on SchemeSel like dwm -------------------------
+# The icon is dwm's floating-window indicator square; title.sh toggles its
+# color between visible and transparent.
+sketchybar --add item title left \
+           --set title label.color=$SEL_FG \
+                 label.padding_left=4 \
+                 label.padding_right=6 \
+                 icon="□" \
+                 icon.drawing=on \
+                 icon.font="$FONT:Book:7.0" \
+                 icon.color=0x00000000 \
+                 icon.y_offset=4 \
+                 icon.padding_left=2 \
+                 icon.padding_right=0 \
+                 background.drawing=on \
+                 background.color=$SEL_BG \
+                 background.height=19 \
+                 background.corner_radius=0 \
+                 script="$PLUGIN_DIR/title.sh" \
+           --subscribe title front_app_switched title_resize
+
+# --- status (right), slstatus; dwm gives it 2px right padding -------------
+sketchybar --add item status right \
+           --set status update_freq=1 \
+                 label.padding_left=6 \
+                 label.padding_right=2 \
+                 script="$PLUGIN_DIR/status.sh"
+
+# -------------------------------------------------------------------------
+sketchybar --update

@@ -2,7 +2,7 @@
 # Render one workspace button like i3bar: blue when focused, dark when it
 # has windows, hidden when empty and unfocused.
 
-source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/themes/i3/colors.sh"
 
 SID="$1"
 FOCUSED="${FOCUSED_WORKSPACE:-$(aerospace list-workspaces --focused)}"

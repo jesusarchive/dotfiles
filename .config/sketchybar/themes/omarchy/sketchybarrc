@@ -1,0 +1,162 @@
+#!/bin/bash
+# SketchyBar theme replicating the Omarchy waybar (config/waybar/config.jsonc
+# + style.css) with the default tokyo-night theme colors.
+
+CONFIG_DIR="$HOME/.config/sketchybar"
+PLUGIN_DIR="$CONFIG_DIR/themes/omarchy/plugins"
+source "$CONFIG_DIR/themes/omarchy/colors.sh"
+
+# --- bar: waybar is top, 26px, flat theme background ---------------------
+sketchybar --bar position=top \
+                 height=26 \
+                 color=$BACKGROUND \
+                 border_width=0 \
+                 corner_radius=0 \
+                 blur_radius=0 \
+                 margin=0 \
+                 y_offset=0 \
+                 padding_left=8 \
+                 padding_right=8 \
+                 shadow=off \
+                 sticky=on \
+                 topmost=window
+
+sketchybar --default updates=on \
+                     icon.drawing=off \
+                     label.font="$FONT:Regular:12.0" \
+                     label.color=$FOREGROUND \
+                     label.padding_left=0 \
+                     label.padding_right=0 \
+                     padding_left=0 \
+                     padding_right=0 \
+                     background.drawing=off
+
+# --- left: omarchy logo + workspaces -------------------------------------
+# waybar custom/omarchy uses a private icon font; apple logo stands in.
+sketchybar --add item logo left \
+           --set logo label="" \
+                 label.padding_left=7 \
+                 label.padding_right=8 \
+                 popup.background.color=$BACKGROUND \
+                 popup.background.border_color=$FOREGROUND_DIM \
+                 popup.background.border_width=1 \
+                 popup.background.corner_radius=0 \
+                 click_script="sketchybar --set logo popup.drawing=toggle"
+
+# Logo popup menu (FelixKratz-style)
+popup_row() {
+  sketchybar --add item "$1" popup.logo \
+             --set "$1" label="$2" \
+                   label.padding_left=10 \
+                   label.padding_right=10 \
+                   click_script="$3; sketchybar --set logo popup.drawing=off"
+}
+popup_row logo.settings "System Settings"  "open -a 'System Settings'"
+popup_row logo.activity "Activity Monitor" "open -a 'Activity Monitor'"
+popup_row logo.lock     "Lock Screen"      "pmset displaysleepnow"
+
+sketchybar --add event aerospace_workspace_change
+
+# Workspaces 1-5 are persistent (dimmed when empty), 6-10 appear when used.
+# Active workspace shows the 󱓻 dot, like hyprland/workspaces format-icons.
+for sid in $(aerospace list-workspaces --all); do
+  sketchybar --add item space."$sid" left \
+             --set space."$sid" \
+                   label="$sid" \
+                   label.padding_left=6 \
+                   label.padding_right=6 \
+                   padding_left=2 \
+                   padding_right=2 \
+                   click_script="aerospace workspace $sid" \
+                   script="$PLUGIN_DIR/workspaces.sh $sid" \
+             --subscribe space."$sid" aerospace_workspace_change
+done
+
+# --- center: clock + weather ---------------------------------------------
+# Click toggles waybar's format-alt (date), like omarchy; no tooltip/popup.
+sketchybar --add item clock center \
+           --set clock update_freq=10 \
+                 label.padding_left=4 \
+                 label.padding_right=4 \
+                 script="$PLUGIN_DIR/clock.sh" \
+           --subscribe clock mouse.clicked
+
+sketchybar --add item weather center \
+           --set weather update_freq=60 \
+                 label.padding_left=4 \
+                 label.padding_right=4 \
+                 script="$PLUGIN_DIR/weather.sh"
+
+# custom/update: icon when brew has outdated packages; click upgrades
+sketchybar --add item update center \
+           --set update drawing=off update_freq=3600 \
+                 label.padding_left=4 \
+                 label.padding_right=4 \
+                 script="$PLUGIN_DIR/update.sh" \
+           --subscribe update mouse.clicked
+
+# custom/screenrecording-indicator: red while recording; click stops it
+sketchybar --add item recording center \
+           --set recording label.font="$FONT:Regular:10.0" drawing=off update_freq=5 \
+                 label.padding_left=5 \
+                 label.padding_right=0 \
+                 script="$PLUGIN_DIR/recording.sh" \
+           --subscribe recording mouse.clicked
+
+# custom/idle-indicator: caffeinate as idle inhibitor; click toggles
+sketchybar --add item idle center \
+           --set idle label.font="$FONT:Regular:10.0" update_freq=10 \
+                 label.padding_left=5 \
+                 label.padding_right=0 \
+                 script="$PLUGIN_DIR/idle.sh" \
+           --subscribe idle mouse.clicked
+
+# --- right: expander, bluetooth, network, audio, cpu, battery ------------
+# Added in reverse: first added sits at the right edge.
+sketchybar --add item battery right \
+           --set battery label.font="$FONT:Regular:14.0" update_freq=30 \
+                 label.padding_left=7 \
+                 label.padding_right=7 \
+                 script="$PLUGIN_DIR/battery.sh"
+
+# omarchy: on-click launch-or-focus btop, on-click-right plain terminal
+sketchybar --add item cpu right \
+           --set cpu label.font="$FONT:Regular:14.0" label="󰍛" \
+                 label.padding_left=7 \
+                 label.padding_right=7 \
+                 script="$PLUGIN_DIR/cpu.sh" \
+           --subscribe cpu mouse.clicked
+
+sketchybar --add item volume right \
+           --set volume label.font="$FONT:Regular:14.0" update_freq=5 \
+                 label.padding_left=7 \
+                 label.padding_right=7 \
+                 script="$PLUGIN_DIR/volume.sh" \
+           --subscribe volume mouse.clicked mouse.scrolled
+
+sketchybar --add item network right \
+           --set network label.font="$FONT:Regular:14.0" update_freq=30 \
+                 label.padding_left=7 \
+                 label.padding_right=13 \
+                 popup.background.color=$BACKGROUND \
+                 popup.background.border_color=$FOREGROUND_DIM \
+                 popup.background.border_width=1 \
+                 popup.background.corner_radius=0 \
+                 script="$PLUGIN_DIR/network.sh" \
+           --subscribe network mouse.clicked
+
+sketchybar --add item bluetooth right \
+           --set bluetooth label.font="$FONT:Regular:14.0" update_freq=30 \
+                 label.padding_left=7 \
+                 label.padding_right=17 \
+                 script="$PLUGIN_DIR/bluetooth.sh" \
+           --subscribe bluetooth mouse.clicked
+
+# tray expander icon (no systray on macOS; kept for the look)
+sketchybar --add item expander right \
+           --set expander label.font="$FONT:Regular:14.0" label="" \
+                 label.padding_left=7 \
+                 label.padding_right=18
+
+# -------------------------------------------------------------------------
+sketchybar --update

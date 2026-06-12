@@ -19,18 +19,22 @@ enable-normalization-opposite-orientation-for-nested-containers = false
 # Mouse follows focus when focused monitor changes
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
-# Reserve space for sketchybar at the bottom
+# Environment for exec-and-forget commands and their children (sketchybar
+# and its plugins inherit this). TERMINAL = default terminal, like omarchy.
+[exec.env-vars]
+TERMINAL = 'kitty'
+PATH = '/opt/homebrew/bin:${PATH}'
+
+# Reserve space for sketchybar (managed by ~/.config/sketchybar/bar-theme:
+# i3 theme uses the bottom edge, omarchy theme the top)
 [gaps]
 outer.bottom = 26
+outer.top = 0
 
 [mode.main.binding]
-    # See: https://nikitabobko.github.io/AeroSpace/goodies#open-a-new-window-with-applescript
-    alt-enter = '''exec-and-forget osascript -e '
-    tell application "Terminal"
-        do script
-        activate
-    end tell'
-    '''
+    # New $TERMINAL window; --single-instance makes repeat invocations open a
+    # new OS window in the running instance instead of doing nothing.
+    alt-enter = 'exec-and-forget $TERMINAL --single-instance -d ~'
 
     # i3 wraps focus by default
     alt-j =         'focus --boundaries-action wrap-around-the-workspace left'

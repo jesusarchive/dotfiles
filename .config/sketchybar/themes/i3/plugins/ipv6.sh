@@ -1,7 +1,7 @@
 #!/bin/bash
 # i3status ipv6: global address or "no IPv6"
 
-source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/themes/i3/colors.sh"
 
 IP=$(ifconfig 2>/dev/null | awk '/inet6/ && $2 !~ /^(fe80|::1)/ && $0 !~ /temporary|deprecated/ {print $2; exit}')
 

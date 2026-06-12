@@ -1,7 +1,7 @@
 #!/bin/bash
 # i3status ethernet _first_: "E: %ip (%speed)" / "E: down"
 
-source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/themes/i3/colors.sh"
 
 WIFI_IF=$(networksetup -listallhardwareports 2>/dev/null | awk '/Wi-Fi/{getline; print $2; exit}')
 

@@ -1,0 +1,22 @@
+#!/bin/bash
+# Switch sketchybar theme: bar-theme i3|omarchy|dwm
+# Adjusts the AeroSpace reserved gap (i3 = bottom bar, omarchy/dwm = top bar)
+# and reloads both.
+
+THEME="$1"
+CONFIG_DIR="$HOME/.config/sketchybar"
+
+case "$THEME" in
+  i3) TOP=0; BOTTOM=26 ;;
+  omarchy) TOP=26; BOTTOM=0 ;;
+  dwm) TOP=19; BOTTOM=0 ;;
+  *) echo "usage: bar-theme i3|omarchy|dwm"; exit 1 ;;
+esac
+
+echo "$THEME" > "$CONFIG_DIR/theme"
+
+sed -i '' "s/^outer\.bottom = .*/outer.bottom = $BOTTOM/; s/^outer\.top = .*/outer.top = $TOP/" ~/.aerospace.toml
+
+aerospace reload-config
+sketchybar --reload
+echo "switched to $THEME"

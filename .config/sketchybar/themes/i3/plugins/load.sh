@@ -1,7 +1,7 @@
 #!/bin/bash
 # i3status load: "%1min", red above core count (max_threshold)
 
-source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/themes/i3/colors.sh"
 
 LOAD=$(sysctl -n vm.loadavg | awk '{print $2}')
 CORES=$(sysctl -n hw.ncpu)

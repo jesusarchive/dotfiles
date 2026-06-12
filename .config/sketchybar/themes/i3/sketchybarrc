@@ -1,0 +1,108 @@
+#!/bin/bash
+# SketchyBar config replicating the default i3bar + i3status look.
+
+CONFIG_DIR="$HOME/.config/sketchybar"
+PLUGIN_DIR="$CONFIG_DIR/themes/i3/plugins"
+source "$CONFIG_DIR/themes/i3/colors.sh"
+
+# --- bar: i3bar defaults (bottom, black, square, flush) -----------------
+sketchybar --bar position=bottom \
+                 height=26 \
+                 color=$BAR_BG \
+                 border_width=0 \
+                 corner_radius=0 \
+                 blur_radius=0 \
+                 margin=0 \
+                 y_offset=0 \
+                 padding_left=0 \
+                 padding_right=4 \
+                 shadow=off \
+                 sticky=on \
+                 topmost=window
+
+sketchybar --default updates=on \
+                     icon.drawing=off \
+                     label.font="$FONT:Book:13.0" \
+                     label.color=$STATUSLINE \
+                     label.padding_left=6 \
+                     label.padding_right=6 \
+                     padding_left=0 \
+                     padding_right=0 \
+                     background.drawing=off
+
+# --- workspaces (left), i3bar buttons -----------------------------------
+sketchybar --add event aerospace_workspace_change
+
+for sid in $(aerospace list-workspaces --all); do
+  sketchybar --add item space."$sid" left \
+             --set space."$sid" \
+                   label="$sid" \
+                   label.padding_left=8 \
+                   label.padding_right=8 \
+                   padding_left=1 \
+                   padding_right=0 \
+                   background.drawing=on \
+                   background.height=24 \
+                   background.corner_radius=0 \
+                   background.border_width=1 \
+                   click_script="aerospace workspace $sid" \
+                   script="$PLUGIN_DIR/aerospace.sh $sid" \
+             --subscribe space."$sid" aerospace_workspace_change
+done
+
+# --- statusline (right), default i3status order -------------------------
+# Items added right-to-left: tztime, memory, load, disk /, battery,
+# ethernet, wireless, ipv6 — with i3bar-style gray separators between.
+
+add_sep() {
+  sketchybar --add item sep."$1" right \
+             --set sep."$1" \
+                   label.drawing=off \
+                   background.drawing=on \
+                   background.color=$SEPARATOR \
+                   background.height=16 \
+                   width=1 \
+                   padding_left=4 \
+                   padding_right=4
+}
+
+sketchybar --add item clock right \
+           --set clock update_freq=1 script="$PLUGIN_DIR/clock.sh"
+
+add_sep 1
+
+sketchybar --add item memory right \
+           --set memory update_freq=5 script="$PLUGIN_DIR/memory.sh"
+
+add_sep 2
+
+sketchybar --add item load right \
+           --set load update_freq=5 script="$PLUGIN_DIR/load.sh"
+
+add_sep 3
+
+sketchybar --add item disk right \
+           --set disk update_freq=30 script="$PLUGIN_DIR/disk.sh"
+
+add_sep 4
+
+sketchybar --add item battery right \
+           --set battery update_freq=30 script="$PLUGIN_DIR/battery.sh"
+
+add_sep 5
+
+sketchybar --add item ethernet right \
+           --set ethernet update_freq=10 script="$PLUGIN_DIR/ethernet.sh"
+
+add_sep 6
+
+sketchybar --add item wifi right \
+           --set wifi update_freq=30 script="$PLUGIN_DIR/wifi.sh"
+
+add_sep 7
+
+sketchybar --add item ipv6 right \
+           --set ipv6 update_freq=30 script="$PLUGIN_DIR/ipv6.sh"
+
+# -------------------------------------------------------------------------
+sketchybar --update

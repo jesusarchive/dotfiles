@@ -1,7 +1,7 @@
 #!/bin/bash
 # i3status memory: "%used | %available", degraded/bad below thresholds
 
-source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/themes/i3/colors.sh"
 
 PAGESIZE=$(sysctl -n hw.pagesize)
 TOTAL=$(sysctl -n hw.memsize)
