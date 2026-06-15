@@ -9,7 +9,7 @@ source "$CONFIG_DIR/themes/dwm/colors.sh"
 # --- bar: dwm defaults (top, gray1, square, flush) -----------------------
 # dwm: bh = font height + 2
 sketchybar --bar position=top \
-                 height=19 \
+                 height=26 \
                  color=$BAR_BG \
                  border_width=0 \
                  corner_radius=0 \
@@ -52,7 +52,7 @@ for sid in $(aerospace list-workspaces --all | grep -E '^[1-9]$'); do
                    icon.padding_left=2 \
                    icon.padding_right=0 \
                    background.drawing=on \
-                   background.height=19 \
+                   background.height=26 \
                    background.corner_radius=0 \
                    background.color=$BAR_BG \
                    click_script="aerospace workspace $sid" \
@@ -86,7 +86,7 @@ sketchybar --add item title left \
                  icon.padding_right=0 \
                  background.drawing=on \
                  background.color=$SEL_BG \
-                 background.height=19 \
+                 background.height=26 \
                  background.corner_radius=0 \
                  script="$PLUGIN_DIR/title.sh" \
            --subscribe title front_app_switched title_resize

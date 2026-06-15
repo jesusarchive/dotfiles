@@ -9,7 +9,7 @@ CONFIG_DIR="$HOME/.config/sketchybar"
 case "$THEME" in
   i3) TOP=0; BOTTOM=26 ;;
   omarchy) TOP=26; BOTTOM=0 ;;
-  dwm) TOP=19; BOTTOM=0 ;;
+  dwm) TOP=26; BOTTOM=0 ;;
   *) echo "usage: bar-theme i3|omarchy|dwm"; exit 1 ;;
 esac
 

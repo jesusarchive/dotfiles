@@ -28,8 +28,8 @@ PATH = '/opt/homebrew/bin:${PATH}'
 # Reserve space for sketchybar (managed by ~/.config/sketchybar/bar-theme:
 # i3 theme uses the bottom edge, omarchy theme the top)
 [gaps]
-outer.bottom = 26
-outer.top = 0
+outer.bottom = 0
+outer.top = 26
 
 [mode.main.binding]
     # New $TERMINAL window; --single-instance makes repeat invocations open a
